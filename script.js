@@ -5,19 +5,74 @@
   var CONFIG = {
     appName: 'グラスクイズ',
     storageKey: 'mdg_glassquiz',
-    apiUrl: 'https://opentdb.com/api.php?amount=10&type=multiple',
     questionCount: 10,
     answerRevealMs: 1100,
   };
 
   var DIFFICULTY_LABEL = { easy: 'かんたん', medium: 'ふつう', hard: 'むずかしい' };
 
+  // ==================== QUESTION BANK（世界地理） ====================
+  var QUESTION_BANK = [
+    { category: '国土', difficulty: 'easy', q: '世界で一番面積が大きい国は？', correct: 'ロシア', wrong: ['カナダ', 'アメリカ合衆国', '中国'] },
+    { category: '国土', difficulty: 'medium', q: '面積が世界で2番目に大きい国は？', correct: 'カナダ', wrong: ['アメリカ合衆国', 'ブラジル', 'オーストラリア'] },
+    { category: '国土', difficulty: 'easy', q: '世界で一番小さい国は？', correct: 'バチカン市国', wrong: ['モナコ', 'サンマリノ', 'リヒテンシュタイン'] },
+    { category: '国土', difficulty: 'medium', q: '世界最大の島は？', correct: 'グリーンランド', wrong: ['ニューギニア島', 'ボルネオ島', 'マダガスカル島'] },
+    { category: '国土', difficulty: 'medium', q: '世界最大の島国は？', correct: 'インドネシア', wrong: ['フィリピン', '日本', 'マダガスカル'] },
+    { category: '国土', difficulty: 'hard', q: '世界最大の半島は？', correct: 'アラビア半島', wrong: ['インド半島', 'スカンディナビア半島', 'バルカン半島'] },
+    { category: '国土', difficulty: 'medium', q: '南極を除くと世界最大とされる砂漠は？', correct: 'サハラ砂漠', wrong: ['ゴビ砂漠', 'カラハリ砂漠', 'アタカマ砂漠'] },
+
+    { category: '首都', difficulty: 'easy', q: 'アメリカ合衆国の首都は？', correct: 'ワシントンD.C.', wrong: ['ニューヨーク', 'ロサンゼルス', 'シカゴ'] },
+    { category: '首都', difficulty: 'medium', q: 'オーストラリアの首都は？', correct: 'キャンベラ', wrong: ['シドニー', 'メルボルン', 'パース'] },
+    { category: '首都', difficulty: 'medium', q: 'カナダの首都は？', correct: 'オタワ', wrong: ['トロント', 'バンクーバー', 'モントリオール'] },
+    { category: '首都', difficulty: 'medium', q: 'ブラジルの首都は？', correct: 'ブラジリア', wrong: ['リオデジャネイロ', 'サンパウロ', 'サルバドール'] },
+    { category: '首都', difficulty: 'hard', q: 'スイスの首都は？', correct: 'ベルン', wrong: ['チューリッヒ', 'ジュネーブ', 'バーゼル'] },
+    { category: '首都', difficulty: 'hard', q: 'トルコの首都は？', correct: 'アンカラ', wrong: ['イスタンブール', 'イズミル', 'アンタルヤ'] },
+    { category: '首都', difficulty: 'easy', q: 'エジプトの首都は？', correct: 'カイロ', wrong: ['アレクサンドリア', 'ルクソール', 'アスワン'] },
+    { category: '首都', difficulty: 'hard', q: 'ケニアの首都は？', correct: 'ナイロビ', wrong: ['モンバサ', 'キスム', 'ナクル'] },
+    { category: '首都', difficulty: 'hard', q: 'ニュージーランドの首都は？', correct: 'ウェリントン', wrong: ['オークランド', 'クライストチャーチ', 'ハミルトン'] },
+    { category: '首都', difficulty: 'easy', q: 'イタリアの首都は？', correct: 'ローマ', wrong: ['ミラノ', 'ナポリ', 'ヴェネツィア'] },
+    { category: '首都', difficulty: 'hard', q: '標高の高さで知られる、南米ボリビアの首都は？', correct: 'ラパス', wrong: ['キト', 'ボゴタ', 'クスコ'] },
+
+    { category: '大陸', difficulty: 'easy', q: '世界で一番大きい大陸は？', correct: 'アジア', wrong: ['アフリカ', 'ヨーロッパ', '北アメリカ'] },
+    { category: '大陸', difficulty: 'medium', q: '世界で一番小さい大陸は？', correct: 'オーストラリア大陸', wrong: ['南極大陸', 'ヨーロッパ大陸', '南アメリカ大陸'] },
+    { category: '大陸', difficulty: 'easy', q: 'サハラ砂漠がある大陸は？', correct: 'アフリカ', wrong: ['アジア', '南アメリカ', 'オーストラリア'] },
+    { category: '大陸', difficulty: 'easy', q: 'アマゾン熱帯雨林が広がる大陸は？', correct: '南アメリカ', wrong: ['アフリカ', 'アジア', 'オセアニア'] },
+    { category: '大陸', difficulty: 'easy', q: 'ナイル川が流れる大陸は？', correct: 'アフリカ', wrong: ['アジア', '南アメリカ', 'ヨーロッパ'] },
+
+    { category: '山', difficulty: 'easy', q: '世界最高峰の山は？', correct: 'エベレスト', wrong: ['K2', 'キリマンジャロ', 'モンブラン'] },
+    { category: '山', difficulty: 'medium', q: 'アフリカ大陸最高峰の山は？', correct: 'キリマンジャロ', wrong: ['アトラス山脈', 'ケニア山', 'ドラケンスバーグ山脈'] },
+    { category: '山', difficulty: 'hard', q: '南米大陸最高峰の山は？', correct: 'アコンカグア', wrong: ['ワスカラン', 'チンボラソ', 'オホスデルサラード'] },
+    { category: '山', difficulty: 'hard', q: 'ヨーロッパ最高峰とされる山は？', correct: 'エルブルース山', wrong: ['モンブラン', 'マッターホルン', 'ユングフラウ'] },
+    { category: '山', difficulty: 'hard', q: '北米大陸最高峰の山は？', correct: 'デナリ', wrong: ['ホイットニー山', 'ローガン山', 'オリサバ山'] },
+
+    { category: '川・湖', difficulty: 'hard', q: '面積が世界最大の湖（塩湖含む）は？', correct: 'カスピ海', wrong: ['スペリオル湖', 'ビクトリア湖', 'バイカル湖'] },
+    { category: '川・湖', difficulty: 'hard', q: '表面積が世界最大の淡水湖は？', correct: 'スペリオル湖', wrong: ['ビクトリア湖', 'バイカル湖', 'タンガニーカ湖'] },
+    { category: '川・湖', difficulty: 'hard', q: '世界で一番深い湖は？', correct: 'バイカル湖', wrong: ['タンガニーカ湖', 'カスピ海', 'マラウイ湖'] },
+    { category: '川・湖', difficulty: 'medium', q: '流域面積が世界最大の川は？', correct: 'アマゾン川', wrong: ['ナイル川', '長江', 'ミシシッピ川'] },
+
+    { category: '海洋', difficulty: 'hard', q: '世界で一番深い海溝は？', correct: 'マリアナ海溝', wrong: ['トンガ海溝', 'フィリピン海溝', 'ペルー海溝'] },
+    { category: '海洋', difficulty: 'easy', q: '世界で一番広い海洋は？', correct: '太平洋', wrong: ['大西洋', 'インド洋', '北極海'] },
+    { category: '海洋', difficulty: 'medium', q: '世界最大の珊瑚礁「グレートバリアリーフ」がある国は？', correct: 'オーストラリア', wrong: ['インドネシア', 'フィリピン', 'タイ'] },
+
+    { category: '建造物', difficulty: 'easy', q: 'エッフェル塔がある国は？', correct: 'フランス', wrong: ['イタリア', 'ドイツ', 'スペイン'] },
+    { category: '建造物', difficulty: 'easy', q: 'コロッセオがある国は？', correct: 'イタリア', wrong: ['ギリシャ', 'フランス', 'スペイン'] },
+    { category: '建造物', difficulty: 'easy', q: 'ギザの三大ピラミッドがある国は？', correct: 'エジプト', wrong: ['スーダン', 'リビア', 'モロッコ'] },
+    { category: '建造物', difficulty: 'medium', q: 'マチュピチュがある国は？', correct: 'ペルー', wrong: ['ボリビア', 'チリ', 'エクアドル'] },
+    { category: '建造物', difficulty: 'medium', q: 'タージ・マハルがある国は？', correct: 'インド', wrong: ['パキスタン', 'バングラデシュ', 'ネパール'] },
+    { category: '建造物', difficulty: 'easy', q: '万里の長城がある国は？', correct: '中国', wrong: ['モンゴル', '韓国', 'ベトナム'] },
+    { category: '建造物', difficulty: 'easy', q: '自由の女神像がある都市は？', correct: 'ニューヨーク', wrong: ['ボストン', 'シカゴ', 'サンフランシスコ'] },
+    { category: '建造物', difficulty: 'medium', q: 'アンコールワットがある国は？', correct: 'カンボジア', wrong: ['タイ', 'ベトナム', 'ラオス'] },
+    { category: '建造物', difficulty: 'medium', q: 'サグラダ・ファミリアがある都市は？', correct: 'バルセロナ', wrong: ['マドリード', 'セビリア', 'バレンシア'] },
+    { category: '建造物', difficulty: 'hard', q: 'ナスカの地上絵がある国は？', correct: 'ペルー', wrong: ['チリ', 'ボリビア', 'コロンビア'] },
+    { category: '建造物', difficulty: 'easy', q: 'ストーンヘンジがある国は？', correct: 'イギリス', wrong: ['アイルランド', 'フランス', 'ドイツ'] },
+  ];
+
   // ==================== STATE ====================
   var state = {
     currentScreen: 'home',
     screenHistory: [],
     data: { highScore: 0, lastScore: null },
-    session: null, // { questions, index, score, answered }
+    session: null, // { questions, index, score, answered, currentAnswers }
   };
 
   // ==================== DOM REFS ====================
@@ -87,32 +142,6 @@
   }
 
   // ==================== UI HELPERS ====================
-  function setLoading(isLoading) {
-    var el = document.getElementById('loading');
-    if (el) el.classList.toggle('hidden', !isLoading);
-  }
-
-  function showToast(message, type) {
-    var toast = document.getElementById('toast');
-    if (!toast) {
-      toast = document.createElement('div');
-      toast.id = 'toast';
-      toast.className = 'toast';
-      document.body.appendChild(toast);
-    }
-    toast.textContent = message;
-    toast.className = 'toast' + (type ? ' ' + type : '');
-    toast.offsetHeight;
-    toast.classList.add('visible');
-    setTimeout(function() { toast.classList.remove('visible'); }, 2500);
-  }
-
-  function decodeHtml(str) {
-    var el = document.createElement('textarea');
-    el.innerHTML = str;
-    return el.value;
-  }
-
   function shuffle(arr) {
     var a = arr.slice();
     for (var i = a.length - 1; i > 0; i--) {
@@ -130,39 +159,17 @@
       state.data.lastScore === null ? '--' : state.data.lastScore + ' / ' + CONFIG.questionCount;
   }
 
-  function showHomeError(show) {
-    var el = document.getElementById('home-error');
-    if (el) el.classList.toggle('hidden', !show);
-  }
-
   // ==================== QUIZ LOGIC ====================
   function startQuiz() {
-    showHomeError(false);
-    setLoading(true);
-    document.getElementById('status-indicator').textContent = '取得中';
-
-    fetch(CONFIG.apiUrl)
-      .then(function(res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
-      .then(function(json) {
-        setLoading(false);
-        if (json.response_code !== 0 || !json.results || json.results.length === 0) {
-          throw new Error('empty results');
-        }
-        state.session = {
-          questions: json.results,
-          index: 0,
-          score: 0,
-          answered: false,
-        };
-        document.getElementById('status-indicator').textContent = 'Ready';
-        navigateTo('quiz');
-      })
-      .catch(function() {
-        setLoading(false);
-        document.getElementById('status-indicator').textContent = 'Ready';
-        showHomeError(true);
-        showToast('問題を取得できませんでした', 'error');
-      });
+    var pool = shuffle(QUESTION_BANK).slice(0, CONFIG.questionCount);
+    state.session = {
+      questions: pool,
+      index: 0,
+      score: 0,
+      answered: false,
+    };
+    document.getElementById('status-indicator').textContent = 'Ready';
+    navigateTo('quiz');
   }
 
   function currentQuestion() {
@@ -176,13 +183,13 @@
     document.getElementById('quiz-progress').textContent =
       '第 ' + (s.index + 1) + ' / ' + s.questions.length + ' 問';
     document.getElementById('quiz-score').textContent = '正解 ' + s.score;
-    document.getElementById('quiz-category').textContent = decodeHtml(q.category);
+    document.getElementById('quiz-category').textContent = q.category;
     document.getElementById('quiz-difficulty').textContent = DIFFICULTY_LABEL[q.difficulty] || q.difficulty;
-    document.getElementById('quiz-question').textContent = decodeHtml(q.question);
+    document.getElementById('quiz-question').textContent = q.q;
 
-    var answers = shuffle(q.incorrect_answers.map(function(a) {
-      return { text: decodeHtml(a), correct: false };
-    }).concat([{ text: decodeHtml(q.correct_answer), correct: true }]));
+    var answers = shuffle(q.wrong.map(function(a) {
+      return { text: a, correct: false };
+    }).concat([{ text: q.correct, correct: true }]));
 
     s.answered = false;
     s.currentAnswers = answers;
@@ -249,10 +256,10 @@
 
   function resultMessage(score, total) {
     var ratio = score / total;
-    if (ratio === 1) return 'パーフェクト！世界のトリビア博士です。';
-    if (ratio >= 0.7) return 'ナイス！かなりの物知りですね。';
+    if (ratio === 1) return 'パーフェクト！世界の地理博士です。';
+    if (ratio >= 0.7) return 'ナイス！かなりの地理通ですね。';
     if (ratio >= 0.4) return 'まずまず！もう一度挑戦してみよう。';
-    return 'このジャンルは奥が深い…もう一度チャレンジ！';
+    return '地図を広げたくなる結果…もう一度チャレンジ！';
   }
 
   // ==================== SCREEN LIFECYCLE ====================
